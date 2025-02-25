@@ -7,7 +7,7 @@ cors = CORS(app)
 app.config['CORS_HEADERS']='Content-Type'
 
 # Clave secreta para firmar los tokens (usa una variable de entorno en producción)
-app.config["SECRET_KEY"] = "super"  
+#app.config["SECRET_KEY"] = "super"  
 app.config["JWT_SECRET_KEY"] = "supersecreto"
 app.config["JWT_TOKEN_LOCATION"] = ['headers']  
 jwt = JWTManager(app)
@@ -28,7 +28,8 @@ def login():
     # Verificar credenciales
     user = users.get(username)
     if user and user["password"] == password:
-        access_token = create_access_token(identity={"username": username, "role": user["role"]})
+        access_token = create_access_token(identity= username)
+        #access_token = create_access_token(identity={"username": username, "role": user["role"]})
         return jsonify(access_token=access_token), 200
 
     return jsonify({"error": "Credenciales inválidas"}), 401
@@ -47,8 +48,12 @@ def protected():
 @jwt_required()
 def get_user(user_id):
     current_user = get_jwt_identity()
-    if current_user["role"] != "admin":
-        return jsonify({"error": "Acceso denegado"}), 403
+    print(f"Usuario autenticado: {current_user}")  # 🔍 Agregar este print para debug
+    if not current_user:
+        return jsonify({"error": "Token inválido o no enviado"}), 401
+
+    #if current_user["role"] != "admin":
+        #return jsonify({"error": "Acceso denegado"}), 403
 
     user = {"id": user_id, "name": "test", "telefono": "999-666-333"}
     return jsonify(user), 200
