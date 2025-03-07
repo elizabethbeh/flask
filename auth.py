@@ -20,7 +20,14 @@ def login():
     user = users.get(username)
     if user and user["password"] == password:
         access_token = create_access_token(identity={"username": username, "role": user["role"]})
-        session["jwt_token"] = access_token  # Guardar token en sesión
-        return redirect(url_for("routes.protected"))  # Redirigir a la ruta protegida
+
+        # Crear respuesta JSON y establecer la cookie
+        response = jsonify({"msg": "Login exitoso"})
+        set_access_cookies(response, access_token)  # Guarda el token en una cookie
+
+            return response, 200
+        
+        #session["jwt_token"] = access_token  # Guardar token en sesión
+        #return redirect(url_for("routes.protected"))  # Redirigir a la ruta protegida
 
     return jsonify({"error": "Credenciales inválidas"}), 401
