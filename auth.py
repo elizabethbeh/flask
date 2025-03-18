@@ -24,8 +24,7 @@ def login():
         # Crear respuesta JSON y establecer la cookie
         response = jsonify({"msg": "Login exitoso"})
         set_access_cookies(response, access_token)  # Guarda el token en una cookie
-
-            return response, 200
+        return response, 200
         
         #session["jwt_token"] = access_token  # Guardar token en sesión
         #return redirect(url_for("routes.protected"))  # Redirigir a la ruta protegida
